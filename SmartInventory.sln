@@ -1,0 +1,68 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Inventories", "Inventories", "{5923F14B-BAD6-453C-9C15-C4EB9A2CDE99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartInventory.Inventories.WebApi", "SmartInventory.Inventories.WebApi\SmartInventory.Inventories.WebApi.csproj", "{B49D3EE5-4290-4212-BCE2-47D447141DA8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{61690469-F026-460C-B1A1-4FB9AE0CC56A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartInventory.Inventories.Commands.Infra.In.RestApi", "SmartInventory.Inventories.Commands.Infra.In.RestApi\SmartInventory.Inventories.Commands.Infra.In.RestApi.csproj", "{85BF0A6B-41B1-42B9-A768-5E05E00DBE80}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartInventory.Inventories.DomainModel", "SmartInventory.Inventories.DomainModel\SmartInventory.Inventories.DomainModel.csproj", "{78A3974A-3E95-45A8-8726-456A61EF5AE9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Framework", "_Framework", "{201FB3D5-9C72-4DED-9C03-47F82BDE5570}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartInventory._Framework.DomainModel", "SmartInventory._Framework.DomainModel\SmartInventory._Framework.DomainModel.csproj", "{1AD79E58-73C6-44DE-9976-707139511740}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartInventory.Inventories.Infra.Out.Repository", "SmartInventory.Inventories.Infra.Out.Repository\SmartInventory.Inventories.Infra.Out.Repository.csproj", "{62053A06-04CB-4A83-BCBD-DC9104ACD728}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartInventory._Framework.Infra.Out.Repository", "SmartInventory._Framework.Infra.Out.Repository\SmartInventory._Framework.Infra.Out.Repository.csproj", "{1C52EDC0-E697-4966-891B-E99329CB093A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartInventory._Framework.Infra.Out.DomainEventApiProxy", "SmartInventory._Framework.Infra.Out.DomainEventApiProxy\SmartInventory._Framework.Infra.Out.DomainEventApiProxy.csproj", "{AA46608D-E9C9-454D-A350-28524DC9E29C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B49D3EE5-4290-4212-BCE2-47D447141DA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B49D3EE5-4290-4212-BCE2-47D447141DA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B49D3EE5-4290-4212-BCE2-47D447141DA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B49D3EE5-4290-4212-BCE2-47D447141DA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85BF0A6B-41B1-42B9-A768-5E05E00DBE80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85BF0A6B-41B1-42B9-A768-5E05E00DBE80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85BF0A6B-41B1-42B9-A768-5E05E00DBE80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85BF0A6B-41B1-42B9-A768-5E05E00DBE80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78A3974A-3E95-45A8-8726-456A61EF5AE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78A3974A-3E95-45A8-8726-456A61EF5AE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78A3974A-3E95-45A8-8726-456A61EF5AE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78A3974A-3E95-45A8-8726-456A61EF5AE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AD79E58-73C6-44DE-9976-707139511740}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AD79E58-73C6-44DE-9976-707139511740}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AD79E58-73C6-44DE-9976-707139511740}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AD79E58-73C6-44DE-9976-707139511740}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62053A06-04CB-4A83-BCBD-DC9104ACD728}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62053A06-04CB-4A83-BCBD-DC9104ACD728}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62053A06-04CB-4A83-BCBD-DC9104ACD728}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62053A06-04CB-4A83-BCBD-DC9104ACD728}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C52EDC0-E697-4966-891B-E99329CB093A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C52EDC0-E697-4966-891B-E99329CB093A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C52EDC0-E697-4966-891B-E99329CB093A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C52EDC0-E697-4966-891B-E99329CB093A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA46608D-E9C9-454D-A350-28524DC9E29C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA46608D-E9C9-454D-A350-28524DC9E29C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA46608D-E9C9-454D-A350-28524DC9E29C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA46608D-E9C9-454D-A350-28524DC9E29C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B49D3EE5-4290-4212-BCE2-47D447141DA8} = {5923F14B-BAD6-453C-9C15-C4EB9A2CDE99}
+		{61690469-F026-460C-B1A1-4FB9AE0CC56A} = {5923F14B-BAD6-453C-9C15-C4EB9A2CDE99}
+		{85BF0A6B-41B1-42B9-A768-5E05E00DBE80} = {61690469-F026-460C-B1A1-4FB9AE0CC56A}
+		{78A3974A-3E95-45A8-8726-456A61EF5AE9} = {61690469-F026-460C-B1A1-4FB9AE0CC56A}
+		{1AD79E58-73C6-44DE-9976-707139511740} = {201FB3D5-9C72-4DED-9C03-47F82BDE5570}
+		{62053A06-04CB-4A83-BCBD-DC9104ACD728} = {61690469-F026-460C-B1A1-4FB9AE0CC56A}
+		{1C52EDC0-E697-4966-891B-E99329CB093A} = {201FB3D5-9C72-4DED-9C03-47F82BDE5570}
+		{AA46608D-E9C9-454D-A350-28524DC9E29C} = {201FB3D5-9C72-4DED-9C03-47F82BDE5570}
+	EndGlobalSection
+EndGlobal
