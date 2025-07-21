@@ -32,15 +32,18 @@ namespace SmartInventory._Framework.DomainModel.Entities
         {
             if(ReferenceEquals(obj, null))
                 return false;
+            
+            if (obj is not Entity<TEntityId> entity )
+                return false;
         
-            if(obj.GetType() != GetType())
+            if(entity.GetType() != GetType())
                 return false;
 
             // same instance
-            if (ReferenceEquals(this, obj))
+            if (ReferenceEquals(this, entity))
                 return true;
-        
-            return EqualityComparer<TEntityId>.Default.Equals(Id, ((Entity<TEntityId>) obj).Id);
+            
+            return EqualityComparer<TEntityId>.Default.Equals(Id, entity.Id);
         }
 
         public override int GetHashCode()

@@ -5,10 +5,11 @@ using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.ValueObje
 
 namespace SmartInventory.Inventories.DomainModel.DomainEventCreators
 {
-    public abstract class InventoryDomainEventCreator<TAggregateRoot, TEntityId>(
+    public abstract class InventoryDomainEventCreator<TAggregateRoot, TEntityId, TData>(
         TAggregateRoot aggregateRoot)
-        : DomainEventCreatorBase<TAggregateRoot, TEntityId>(aggregateRoot) where TAggregateRoot : AggregateRoot<TEntityId>
+        : DomainEventCreatorBase<TAggregateRoot,TEntityId,TData>(aggregateRoot) where TAggregateRoot : AggregateRoot<TEntityId,TData>
         where TEntityId : EntityId
+        where TData : DomainEventData
     {
         protected override MicroserviceName MicroserviceName => new MicroserviceName("Inventory");
     }

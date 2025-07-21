@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity;
+using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.ValueObjects;
 
 namespace SmartInventory._Framework.Infra.Out.Repository.DbContexts;
 
-public interface ICommandsDbContext
+public interface ICommandsDbContext<TData>
+    where TData : DomainEventData
 {
     /// <summary>
     /// The database of this DbContext.
@@ -15,7 +17,7 @@ public interface ICommandsDbContext
     /// Used for accessing database records
     /// represented by DomainEvents.
     /// </summary>
-    DbSet<DomainEvent> DomainEvents { get; }
+    DbSet<DomainEvent<TData>> DomainEvents { get; } 
     
     /// <summary>
     /// Saves all changes added to the DbSets of this DbContext.

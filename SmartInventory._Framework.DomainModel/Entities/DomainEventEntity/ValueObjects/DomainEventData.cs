@@ -11,7 +11,7 @@ namespace SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.Value
         /// Constructor
         /// </summary>
         /// <param name="dataAsJson">The event data as json.</param>
-        private DomainEventData(string dataAsJson)
+        protected DomainEventData(string dataAsJson)
         {
 
             DataAsJson = dataAsJson;

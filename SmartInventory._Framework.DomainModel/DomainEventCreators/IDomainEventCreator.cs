@@ -2,12 +2,13 @@
 
 namespace SmartInventory._Framework.DomainModel.DomainEventCreators
 {
-    public interface IDomainEventCreator
+    public interface IDomainEventCreator<TData> 
+        where TData : Entities.DomainEventEntity.ValueObjects.DomainEventData 
     {
         /// <summary>
         /// Creates to domain event from the creator
         /// </summary>
         /// <returns></returns>
-        DomainEvent ToDomainEvent();
+        DomainEvent<TData> ToDomainEvent();
     }
 }

@@ -1,22 +1,27 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using SmartInventory._Framework.DomainModel.Aggregates;
 using SmartInventory._Framework.DomainModel.Entities;
+using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.ValueObjects;
 using SmartInventory._Framework.Infra.Out.Repository.DbContexts;
 
 namespace SmartInventory._Framework.Infra.Out.Repository.Repositories;
 
-public class CommandsRepository
+public class CommandsRepository<TData>
+    where TData : DomainEventData
 {
-    private ICommandsDbContext DbContext { get; init; }
+    private ICommandsDbContext<TData> DbContext { get; init; }
+    private IPublishEndpoint PublishEndpoint { get; init; }
 
-    protected CommandsRepository(ICommandsDbContext dbContext)
+    protected CommandsRepository(ICommandsDbContext<TData> dbContext, IPublishEndpoint publishEndpoint)
     {
         DbContext = dbContext;
+        PublishEndpoint = publishEndpoint;
     }
     
     protected async Task CreateAsync<TAggregateRoot, TAggregateRootId>(DbSet<TAggregateRoot> dbSet,
         TAggregateRoot aggregateRoot)
-        where TAggregateRoot : AggregateRoot<TAggregateRootId>
+        where TAggregateRoot : AggregateRoot<TAggregateRootId,TData>
         where TAggregateRootId : EntityId
     {
         await using var transaction = await DbContext.Database.BeginTransactionAsync();
@@ -27,6 +32,8 @@ public class CommandsRepository
             await DbContext.SaveChangesAsync();
             await transaction.CommitAsync();
             await DbContext.SaveChangesAsync();
+            
+            await PublishEndpoint.Publish(aggregateRoot.DomainEvent);
         }
         catch (DbUpdateConcurrencyException ex)
         {

@@ -5,9 +5,10 @@ using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.ValueObje
 
 namespace SmartInventory._Framework.Infra.Out.Repository.DbContexts.DbConfigurations;
 
-public class DomainEventsDbConfiguration: IEntityTypeConfiguration<DomainEvent>
+public class DomainEventsDbConfiguration<TData>: IEntityTypeConfiguration<DomainEvent<TData>>
+where TData: DomainEventData
 {
-    public void Configure(EntityTypeBuilder<DomainEvent> builder)
+    public void Configure(EntityTypeBuilder<DomainEvent<TData>> builder)
     {
         builder.ToTable("DomainEvents");
         
@@ -37,6 +38,7 @@ public class DomainEventsDbConfiguration: IEntityTypeConfiguration<DomainEvent>
 
         builder
             .Property(d => d.DomainEventData)
+            .HasConversion(data => data.DataAsJson, value => (DomainEventData.Create(value) as TData)!)
             .IsRequired();
         
         builder

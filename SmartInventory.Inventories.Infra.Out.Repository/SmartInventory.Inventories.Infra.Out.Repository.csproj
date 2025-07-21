@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\SmartInventory.Inventories.DomainModel\SmartInventory.Inventories.DomainModel.csproj" />
       <ProjectReference Include="..\SmartInventory._Framework.DomainModel\SmartInventory._Framework.DomainModel.csproj" />
       <ProjectReference Include="..\SmartInventory._Framework.Infra.Out.Repository\SmartInventory._Framework.Infra.Out.Repository.csproj" />
     </ItemGroup>

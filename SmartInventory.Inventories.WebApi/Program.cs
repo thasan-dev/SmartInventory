@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity;
+using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.ValueObjects;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,9 +48,9 @@ builder.Services.AddMassTransit(config =>
         cfg.PublishTopology.BrokerTopologyOptions =
             PublishBrokerTopologyOptions
                 .FlattenHierarchy; //Prevents MassTransit from creating separate exchanges per message type. Forces all messages to use a single exchange
-        cfg.SendTopology.UseCorrelationId<DomainEvent>(x =>
+        cfg.SendTopology.UseCorrelationId<DomainEvent<DomainEventData>>(x =>
             x.Id.Value); // RabbitMQ will store DomainEventId in the CorrelationId header.
-        cfg.Message<DomainEvent>(m =>
+        cfg.Message<DomainEvent<DomainEventData>>(m =>
             m.SetEntityName(
                 "exchange.inventories")); // MassTransit will use the inventories exchange for all DomainEvent messages
 

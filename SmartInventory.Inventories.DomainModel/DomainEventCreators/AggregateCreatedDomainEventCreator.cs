@@ -4,11 +4,12 @@ using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.ValueObje
 
 namespace SmartInventory.Inventories.DomainModel.DomainEventCreators
 {
-    public class AggregateCreatedDomainEventCreator<TAggregateRoot, TEntityId>(
+    public class AggregateCreatedDomainEventCreator<TAggregateRoot, TEntityId,TData>(
         TAggregateRoot aggregateRoot)
-        : InventoryDomainEventCreator<TAggregateRoot, TEntityId>(aggregateRoot)
-        where TAggregateRoot : AggregateRoot<TEntityId>
+        : InventoryDomainEventCreator<TAggregateRoot, TEntityId,TData>(aggregateRoot)
+        where TAggregateRoot : AggregateRoot<TEntityId,TData>
         where TEntityId : EntityId
+        where TData : DomainEventData
     {
         protected override DomainEventName DomainEventName => DomainEventName.Create($"{AggregateRootName.Value}Created");
     
