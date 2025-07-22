@@ -2,51 +2,41 @@
 
 namespace SmartInventory._Framework.DomainModel.Entities.DomainEventEntity;
 
-public class DomainEvent<TData> : Entity<DomainEventId>
-    where TData : DomainEventData
+public class DomainEvent : Entity<DomainEventId>
 {
-    public DomainEventName Name { get; private set; }
-    public MicroserviceName MicroserviceName { get; private set; }
-    public AggregateRootId AggregateRootId { get; private set; }
-    public AggregateRootName AggregateRootName { get; private set; }
-    public TData DomainEventData { get; private set; }
-    public IsPublished IsPublished { get; private set; }
+    public DomainEventName Name { get; private set; } = null!;
+    public MicroserviceName MicroserviceName { get; private set; } = null!;
+    public AggregateRootId AggregateRootId { get; private set; } = null!;
+    public AggregateRootName AggregateRootName { get; private set; } = null!;
+    public IsPublished IsPublished { get; private set; } = null!;
 
-    private DomainEvent(DomainEventName name,
-        MicroserviceName microserviceName, 
-        AggregateRootId aggregateRootId,
-        AggregateRootName aggregateRootName,
-        TData domainEventData,
-        IsPublished isPublished)
+    protected DomainEvent()
+        : base(DomainEventId.Create(Guid.NewGuid()))
     {
-        Name = name;
-        AggregateRootId = aggregateRootId;
-        AggregateRootName = aggregateRootName;
-        DomainEventData = domainEventData;
-        IsPublished = isPublished;
-        MicroserviceName = microserviceName;
     }
     
-    public static DomainEvent<TData> Create(DomainEventName name,
-        MicroserviceName microserviceName, 
-        AggregateRootId aggregateRootId,
-        AggregateRootName aggregateRootName,
-        TData domainEventData,
-        IsPublished isPublished)
+    public void Set(
+        string domainEventName,
+        string microserviceName, 
+        Guid aggregateRootId,
+        string aggregateRootName,
+        bool isPublished)
     {
-        return new DomainEvent<TData>(name, microserviceName, aggregateRootId, aggregateRootName, domainEventData, isPublished);
+        Name = DomainEventName.Create(domainEventName);
+        MicroserviceName= MicroserviceName.Create(microserviceName);
+        AggregateRootId = AggregateRootId.Create(aggregateRootId);
+        AggregateRootName = AggregateRootName.Create(aggregateRootName);
+        IsPublished = IsPublished.Create(isPublished);
     }
 
-    public override object ToDomainEventObject()
+    public object GetDomainEventMessage()
     {
         return new
         {
             Id = Id.Value,
-            DomainEventName = Name.Value,
             AggregateRootId = AggregateRootId.Value,
             AggregateRootName = AggregateRootName.Value,
             MicroserviceName = MicroserviceName.Value,
-            DomainEventData = DomainEventData.DataAsJson,
             IsPublished
         };
     }

@@ -25,8 +25,7 @@ namespace SmartInventory._Framework.DomainModel.Entities
         /// The id of the entity.
         /// </summary>
         public TEntityId Id { get; } = null!;
-
-        public abstract object ToDomainEventObject();
+        
     
         public override bool Equals(object? obj)
         {

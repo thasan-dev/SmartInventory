@@ -5,19 +5,12 @@ using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.ValueObje
 
 namespace SmartInventory._Framework.Infra.Out.Repository.DbContexts;
 
-public interface ICommandsDbContext<TData>
-    where TData : DomainEventData
+public interface ICommandsDbContext
 {
     /// <summary>
     /// The database of this DbContext.
     /// </summary>
     DatabaseFacade Database { get; }
-    
-    /// <summary>
-    /// Used for accessing database records
-    /// represented by DomainEvents.
-    /// </summary>
-    DbSet<DomainEvent<TData>> DomainEvents { get; } 
     
     /// <summary>
     /// Saves all changes added to the DbSets of this DbContext.

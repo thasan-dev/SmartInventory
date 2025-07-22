@@ -25,5 +25,10 @@ namespace SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.Value
         {
             yield return Value;
         }
+        
+        public static IsPublished Create(bool value)
+        {
+            return new IsPublished(value);
+        }
     }
 }

@@ -1,12 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using SmartInventory._Framework.DomainModel.DomainEventCreators;
 using SmartInventory._Framework.DomainModel.Entities;
 using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity;
 using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.ValueObjects;
 
 namespace SmartInventory._Framework.DomainModel.Aggregates
 {
-    public abstract class AggregateRoot<TId,TData>: Entity<TId> where TId : EntityId where TData : DomainEventData
+    public abstract class AggregateRoot<TId,TDomainEvent>: Entity<TId> where TId : EntityId where TDomainEvent :DomainEvent
     {
         /// <summary>
         /// Constructor - used by EntityFramework
@@ -24,11 +23,9 @@ namespace SmartInventory._Framework.DomainModel.Aggregates
             : base(id)
         { }
     
-        public DomainEvent<TData> DomainEvent { get; private set; } = null!;
+        public TDomainEvent DomainEvent { get; protected set; } = null!;
 
-        protected void HandleDomainCommand(Func<IDomainEventCreator<TData>> commandHandler)
-        {
-            DomainEvent = commandHandler.Invoke().ToDomainEvent();
-        }
+        protected abstract void RaiseDomainEvent<TAggregateRoot>(DomainEventType domainEventType)
+            where TAggregateRoot : AggregateRoot<TId, TDomainEvent>;
     }
 }

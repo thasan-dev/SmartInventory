@@ -5,10 +5,9 @@ using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.ValueObje
 
 namespace SmartInventory._Framework.Infra.Out.Repository.DbContexts.DbConfigurations;
 
-public class DomainEventsDbConfiguration<TData>: IEntityTypeConfiguration<DomainEvent<TData>>
-where TData: DomainEventData
+public class DomainEventsDbConfiguration: IEntityTypeConfiguration<DomainEvent>
 {
-    public void Configure(EntityTypeBuilder<DomainEvent<TData>> builder)
+    public void Configure(EntityTypeBuilder<DomainEvent> builder)
     {
         builder.ToTable("DomainEvents");
         
@@ -16,11 +15,6 @@ where TData: DomainEventData
         builder
             .Property(d => d.Id)
             .HasConversion(id => id.Value, idValue => DomainEventId.Create(idValue));
-        
-        builder
-            .Property(d => d.Name)
-            .HasConversion(p => p.Value, value => DomainEventName.Create(value))
-            .IsRequired();
         
         builder
             .Property(d => d.AggregateRootName)
@@ -35,11 +29,6 @@ where TData: DomainEventData
         builder
             .Property(d => d.MicroserviceName)
             .HasConversion(name => name.Value, nameValue => new MicroserviceName(nameValue));
-
-        builder
-            .Property(d => d.DomainEventData)
-            .HasConversion(data => data.DataAsJson, value => (DomainEventData.Create(value) as TData)!)
-            .IsRequired();
         
         builder
             .Property(d=>d.IsPublished)

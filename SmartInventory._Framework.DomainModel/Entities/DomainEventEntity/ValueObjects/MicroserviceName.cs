@@ -25,5 +25,14 @@ namespace SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.Value
         {
             yield return Value;
         }
+        
+        public MicroserviceName Create(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentException("Microservice name cannot be null or empty.", nameof(value));
+            }
+            return new MicroserviceName(value);
+        }
     }
 }
