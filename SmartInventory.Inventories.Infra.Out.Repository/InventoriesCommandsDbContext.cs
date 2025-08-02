@@ -1,14 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartInventory._Framework.Infra.Out.Repository.DbContexts;
 using SmartInventory.Inventories.DomainModel.PlantAggregate;
+using SmartInventory.Inventories.Repository.DbConfigurations;
 
 namespace SmartInventory.Inventories.Repository;
 
 public class InventoriesCommandsDbContext(DbContextOptions options) : CommandsDbContext(options),IInventoriesCommandsDbContext
 {
+    public DbSet<Plant> Plants { get; set; }
+    
     protected override void ConfigureEntityTables(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Plant>().ToTable("Plants");
+        modelBuilder.ApplyConfiguration(new PlantConfiguration());
+          
     }
-    public DbSet<Plant> Plants { get; set; }
+
 }

@@ -2,6 +2,7 @@ using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity;
@@ -40,12 +41,29 @@ builder.Services.AddApiVersioning(option =>
     options.SubstituteApiVersionInUrl = true;
 });
 
+
+builder.Services.AddDbContext<InventoriesCommandsDbContext>(option =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    var assemblyName = typeof(Program).Assembly.GetName().Name!;
+    
+    option.UseSqlServer(connectionString,
+        sqlServerOptionsAction => sqlServerOptionsAction.MigrationsAssembly(assemblyName));
+});
+builder.Services.AddScoped<IInventoriesCommandsDbContext, InventoriesCommandsDbContext>();
+
 builder.Services.AddMassTransit(config =>
 {
+    
+    
     config.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("rabbitmq://localhost");
-
+        cfg.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+        
         cfg.PublishTopology.BrokerTopologyOptions =
             PublishBrokerTopologyOptions
                 .FlattenHierarchy; //Prevents MassTransit from creating separate exchanges per message type. Forces all messages to use a single exchange
@@ -61,6 +79,15 @@ builder.Services.AddMassTransit(config =>
             e.Bind("exchange.inventories"); // Bind queue to exchange
 
         });
+    });
+    
+    config.AddEntityFrameworkOutbox<InventoriesCommandsDbContext>(o =>
+    {
+        // configure which database lock provider to use (Postgres, SqlServer, or MySql)
+        o.UseSqlServer();
+
+        // enable the bus outbox
+        o.UseBusOutbox();
     });
 });
 

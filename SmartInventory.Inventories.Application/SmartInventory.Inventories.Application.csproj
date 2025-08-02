@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SmartInventory.Inventories.DomainModel\SmartInventory.Inventories.DomainModel.csproj" />
+    </ItemGroup>
+
 </Project>

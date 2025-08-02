@@ -32,7 +32,6 @@ public class CommandsRepository
             
             await DbContext.SaveChangesAsync();
             await transaction.CommitAsync();
-            await DbContext.SaveChangesAsync();
             
             await PublishEndpoint.Publish(aggregateRoot.DomainEvent);
         }

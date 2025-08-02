@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity;
-using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.ValueObjects;
-using SmartInventory._Framework.Infra.Out.Repository.DbContexts.DbConfigurations;
+﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 
 namespace SmartInventory._Framework.Infra.Out.Repository.DbContexts;
 
@@ -12,6 +10,10 @@ public abstract class CommandsDbContext(DbContextOptions options) : DbContext(op
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.AddInboxStateEntity();
+        modelBuilder.AddOutboxMessageEntity();
+        modelBuilder.AddOutboxStateEntity();  
+        
         // configure common aggregates
         ConfigureEntityTables(modelBuilder);
     }

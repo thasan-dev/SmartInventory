@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity;
-using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.ValueObjects;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace SmartInventory._Framework.Infra.Out.Repository.DbContexts;
 
