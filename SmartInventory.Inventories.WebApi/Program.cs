@@ -6,8 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity;
-using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.ValueObjects;
+using SmartInventory.Inventories.Application.Plants;
+using SmartInventory.Inventories.DomainModel.PlantAggregate;
 using SmartInventory.Inventories.Repository;
+using SmartInventory.Inventories.WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,30 +20,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1.0", new OpenApiInfo
-    {
-        Title = "Inventories", Description = "A Smart Inventory API", Version = "v1", Contact = new OpenApiContact
-        {
-            Name = "Tanveer Hasan"
-        }
-    });
-    options.SwaggerDoc("v2.0", new OpenApiInfo { Title = "Inventories", Version = "v2" });
-});
-builder.Services.AddApiVersioning(option =>
-{
-    option.DefaultApiVersion = ApiVersion.Default;
-    option.ReportApiVersions = true;
-    option.ApiVersionReader = new UrlSegmentApiVersionReader();
-    option.AssumeDefaultVersionWhenUnspecified = true;
-}).AddApiExplorer(options =>
-{
-    options.GroupNameFormat = "'v'VV";
-    options.SubstituteApiVersionInUrl = true;
-});
+builder.Services.AddSwagger();
+builder.Services.AddMassTransit();
 
-
+// Add DbContexts
 builder.Services.AddDbContext<InventoriesCommandsDbContext>(option =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -50,46 +32,16 @@ builder.Services.AddDbContext<InventoriesCommandsDbContext>(option =>
     option.UseSqlServer(connectionString,
         sqlServerOptionsAction => sqlServerOptionsAction.MigrationsAssembly(assemblyName));
 });
+
 builder.Services.AddScoped<IInventoriesCommandsDbContext, InventoriesCommandsDbContext>();
 
-builder.Services.AddMassTransit(config =>
-{
-    
-    
-    config.UsingRabbitMq((context, cfg) =>
-    {
-        cfg.Host("localhost", "/", h =>
-        {
-            h.Username("guest");
-            h.Password("guest");
-        });
-        
-        cfg.PublishTopology.BrokerTopologyOptions =
-            PublishBrokerTopologyOptions
-                .FlattenHierarchy; //Prevents MassTransit from creating separate exchanges per message type. Forces all messages to use a single exchange
-        cfg.SendTopology.UseCorrelationId<DomainEvent>(x =>
-            x.Id.Value); // RabbitMQ will store DomainEventId in the CorrelationId header.
-        cfg.Message<DomainEvent>(m =>
-            m.SetEntityName(
-                "exchange.inventories")); // MassTransit will use the inventories exchange for all DomainEvent messages
 
-        // configure consumers.
-        cfg.ReceiveEndpoint("queue.inventories", e =>
-        {
-            e.Bind("exchange.inventories"); // Bind queue to exchange
+// Add Application services
+builder.Services.AddScoped<IPlantApplicationService, PlantApplicationService>();
 
-        });
-    });
-    
-    config.AddEntityFrameworkOutbox<InventoriesCommandsDbContext>(o =>
-    {
-        // configure which database lock provider to use (Postgres, SqlServer, or MySql)
-        o.UseSqlServer();
+// Add Repository
 
-        // enable the bus outbox
-        o.UseBusOutbox();
-    });
-});
+builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 
 var app = builder.Build();
 
@@ -108,6 +60,7 @@ if (app.Environment.IsDevelopment())
         }
     });
 }
+
 
 app.UseHttpsRedirection();
 

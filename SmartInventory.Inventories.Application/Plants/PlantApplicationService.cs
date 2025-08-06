@@ -4,7 +4,7 @@ using SmartInventory.Inventories.DomainModel.PlantAggregate.DomainCommands;
 
 namespace SmartInventory.Inventories.Application.Plants;
 
-public class PlantsApplicationService(IPlantRepository plantRepository):IPlantsApplicationService
+public class PlantApplicationService(IPlantRepository plantRepository):IPlantApplicationService
 {
     
     public async Task CreateOrUpdateAsync(CreateOrUpdatePlantCommand command)

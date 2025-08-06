@@ -12,4 +12,8 @@
       <PackageReference Include="Microsoft.Identity.Web" Version="2.15.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SmartInventory.Inventories.Application\SmartInventory.Inventories.Application.csproj" />
+    </ItemGroup>
+
 </Project>

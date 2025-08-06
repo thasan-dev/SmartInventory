@@ -26,7 +26,7 @@ namespace SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.Value
             yield return Value;
         }
         
-        public MicroserviceName Create(string value)
+        public static MicroserviceName Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {

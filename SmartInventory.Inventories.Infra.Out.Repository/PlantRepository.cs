@@ -8,9 +8,16 @@ using SmartInventory.Inventories.DomainModel.PlantAggregate.ValueObjects;
 namespace SmartInventory.Inventories.Repository;
 
 
-public class PlantRepository( IInventoriesCommandsDbContext dbContext,
-    IPublishEndpoint publishEndpoint) : 
-    DefaultCommandRepository<Plant, PlantId, PlantDomainEvent>(dbContext,publishEndpoint),IPlantRepository
+public class PlantRepository : 
+    DefaultCommandRepository<Plant, PlantId, PlantDomainEvent>,IPlantRepository
 {
-    protected override DbSet<Plant> DbSet  => dbContext.Plants;
+    private readonly IInventoriesCommandsDbContext _dbContext;
+
+    public PlantRepository(IInventoriesCommandsDbContext dbContext,
+        IPublishEndpoint publishEndpoint) : base(dbContext,publishEndpoint)
+    {
+        _dbContext = dbContext;
+    }
+
+    protected override DbSet<Plant> DbSet  => _dbContext.Plants;
 }
