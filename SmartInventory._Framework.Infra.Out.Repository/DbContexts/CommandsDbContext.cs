@@ -10,13 +10,16 @@ public abstract class CommandsDbContext(DbContextOptions options) : DbContext(op
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.AddInboxStateEntity();
-        modelBuilder.AddOutboxMessageEntity();
-        modelBuilder.AddOutboxStateEntity();  
-        
         // configure common aggregates
         ConfigureEntityTables(modelBuilder);
     }
-    
+   
     protected abstract void ConfigureEntityTables(ModelBuilder modelBuilder);
+
+    private void ConfigureMassTransitOutboxEntities(ModelBuilder modelBuilder)
+    {
+        modelBuilder.AddInboxStateEntity();
+        modelBuilder.AddOutboxMessageEntity();
+        modelBuilder.AddOutboxStateEntity();  
+    }
 }

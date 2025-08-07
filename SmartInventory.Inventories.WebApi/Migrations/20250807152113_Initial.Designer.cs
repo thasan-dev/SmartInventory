@@ -12,7 +12,7 @@ using SmartInventory.Inventories.Repository;
 namespace SmartInventory.Inventories.WebApi.Migrations
 {
     [DbContext(typeof(InventoriesCommandsDbContext))]
-    [Migration("20250731180205_Initial")]
+    [Migration("20250807152113_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace SmartInventory.Inventories.WebApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.18")
+                .HasAnnotation("ProductVersion", "9.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

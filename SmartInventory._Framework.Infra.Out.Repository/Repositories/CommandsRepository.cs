@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using SmartInventory._Framework.DomainModel.Aggregates;
 using SmartInventory._Framework.DomainModel.Entities;
 using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity;
-using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.ValueObjects;
 using SmartInventory._Framework.Infra.Out.Repository.DbContexts;
 
 namespace SmartInventory._Framework.Infra.Out.Repository.Repositories;
@@ -25,23 +24,26 @@ public class CommandsRepository
         where TDomainEvent : DomainEvent
         where TAggregateRootId : EntityId
     {
-        await using var transaction = await DbContext.Database.BeginTransactionAsync();
+
+        await DbContext.Database.OpenConnectionAsync();
+        var cts = new CancellationTokenSource(TimeSpan.FromSeconds(100));
+        await using var transaction = await DbContext.Database.BeginTransactionAsync(cts.Token);
         try
         {
             dbSet.Add(aggregateRoot);
             
-            await DbContext.SaveChangesAsync();
-            await transaction.CommitAsync();
+            await DbContext.SaveChangesAsync(cts.Token);
+            await transaction.CommitAsync(cts.Token);
             
-            await PublishEndpoint.Publish(aggregateRoot.DomainEvent);
+            //await PublishEndpoint.Publish(aggregateRoot.DomainEvent);
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            await transaction.RollbackAsync();
+            await transaction.RollbackAsync(cts.Token);
         }
         catch (DbUpdateException ex)
         {
-            await transaction.RollbackAsync();
+            await transaction.RollbackAsync(cts.Token);
         }
     }
 }

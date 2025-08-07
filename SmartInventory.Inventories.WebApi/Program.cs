@@ -35,12 +35,10 @@ builder.Services.AddDbContext<InventoriesCommandsDbContext>(option =>
 
 builder.Services.AddScoped<IInventoriesCommandsDbContext, InventoriesCommandsDbContext>();
 
-
 // Add Application services
 builder.Services.AddScoped<IPlantApplicationService, PlantApplicationService>();
 
 // Add Repository
-
 builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 
 var app = builder.Build();

@@ -63,14 +63,14 @@ public static class ServiceExtensions
                 });
             });
     
-            config.AddEntityFrameworkOutbox<InventoriesCommandsDbContext>(o =>
-            {
-                // configure which database lock provider to use (Postgres, SqlServer, or MySql)
-                o.UseSqlServer();
-
-                // enable the bus outbox
-                o.UseBusOutbox();
-            });
+            // config.AddEntityFrameworkOutbox<InventoriesCommandsDbContext>(o =>
+            // {
+            //     // configure which database lock provider to use (Postgres, SqlServer, or MySql)
+            //     o.UseSqlServer();
+            //
+            //     // enable the bus outbox
+            //     o.UseBusOutbox();
+            // });
         });
     }
 }

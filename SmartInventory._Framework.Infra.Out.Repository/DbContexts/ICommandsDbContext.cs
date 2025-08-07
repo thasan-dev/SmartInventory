@@ -13,4 +13,11 @@ public interface ICommandsDbContext
     /// Saves all changes added to the DbSets of this DbContext.
     /// </summary>
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+
+    /// <summary>
+    /// Saves all changes added to the DbSets of this DbContext.
+    /// </summary>
+    int SaveChanges();
+
 }
