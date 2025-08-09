@@ -46,14 +46,16 @@ public static class ServiceExtensions
                     h.Password("guest");
                 });
         
+                //PublishBrokerTopologyOptions.FlattenHierarchy: Prevents MassTransit from creating separate exchanges per message type. Forces all messages to use a single exchange
+                // We are publishing messages to exchanges for pub/sub messaging.
+                // In the next line we have defined the exchange name to : exchange.inventories
                 cfg.PublishTopology.BrokerTopologyOptions =
                     PublishBrokerTopologyOptions
-                        .FlattenHierarchy; //Prevents MassTransit from creating separate exchanges per message type. Forces all messages to use a single exchange
-                cfg.SendTopology.UseCorrelationId<DomainEvent>(x =>
-                    x.Id.Value); // RabbitMQ will store DomainEventId in the CorrelationId header.
+                        .FlattenHierarchy; 
+             
                 cfg.Message<DomainEvent>(m =>
                     m.SetEntityName(
-                        "exchange.inventories")); // MassTransit will use the inventories exchange for all DomainEvent messages
+                        "exchange.inventories")); // MassTransit will use the inventories exchange for all DomainEvent messages type
 
                 // configure consumers.
                 cfg.ReceiveEndpoint("queue.inventories", e =>
@@ -61,16 +63,17 @@ public static class ServiceExtensions
                     e.Bind("exchange.inventories"); // Bind queue to exchange
 
                 });
+                //cfg.ConfigureEndpoints(context);
             });
     
-            // config.AddEntityFrameworkOutbox<InventoriesCommandsDbContext>(o =>
-            // {
-            //     // configure which database lock provider to use (Postgres, SqlServer, or MySql)
-            //     o.UseSqlServer();
-            //
-            //     // enable the bus outbox
-            //     o.UseBusOutbox();
-            // });
+            config.AddEntityFrameworkOutbox<InventoriesCommandsDbContext>(o =>
+            {
+                // configure which database lock provider to use (Postgres, SqlServer, or MySql)
+                o.UseSqlServer();
+            
+                // enable the bus outbox
+                o.UseBusOutbox();
+            });
         });
     }
 }

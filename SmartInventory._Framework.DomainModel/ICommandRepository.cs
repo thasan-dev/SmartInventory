@@ -4,7 +4,7 @@ using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity;
 
 namespace SmartInventory._Framework.DomainModel;
 
-public interface IDefaultCommandRepository<TAggregateRoot,TEntityId,TDomainEvent>
+public interface ICommandRepository<TAggregateRoot,TEntityId,TDomainEvent>
     where TAggregateRoot : AggregateRoot<TEntityId,TDomainEvent>
     where TEntityId : EntityId  
     where TDomainEvent : DomainEvent

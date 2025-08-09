@@ -13,9 +13,9 @@ namespace SmartInventory.Inventories.Commands.Infra.In.RestApi.Controllers.V1.Pl
 public class PlantController(IPlantApplicationService plantApplicationService): ControllerBase
 {
     [HttpPost]
-    public IActionResult CreateAsync(CreatePlantCommand  command)
+    public async Task<IActionResult> CreateAsync(CreatePlantCommand  command)
     {
-        plantApplicationService.CreateOrUpdateAsync(
+        await plantApplicationService.CreateOrUpdateAsync(
             new CreateOrUpdatePlantCommand(command.Id, command.Name));
         return Ok();
     }

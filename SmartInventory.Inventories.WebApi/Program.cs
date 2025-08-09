@@ -20,9 +20,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-builder.Services.AddSwagger();
-builder.Services.AddMassTransit();
-
 // Add DbContexts
 builder.Services.AddDbContext<InventoriesCommandsDbContext>(option =>
 {
@@ -32,6 +29,9 @@ builder.Services.AddDbContext<InventoriesCommandsDbContext>(option =>
     option.UseSqlServer(connectionString,
         sqlServerOptionsAction => sqlServerOptionsAction.MigrationsAssembly(assemblyName));
 });
+
+builder.Services.AddSwagger();
+builder.Services.AddMassTransit();
 
 builder.Services.AddScoped<IInventoriesCommandsDbContext, InventoriesCommandsDbContext>();
 
