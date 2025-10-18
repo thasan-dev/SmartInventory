@@ -39,7 +39,7 @@ where TEntityId : EntityId
         {
             dbSet.Add(aggregateRoot);
             await publishEndpoint.Publish(aggregateRoot.DomainEvent);
-            
+           
             await dbContext.SaveChangesAsync();
 
             await transaction.CommitAsync();

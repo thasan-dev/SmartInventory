@@ -1,12 +1,15 @@
 using Asp.Versioning;
 using MassTransit;
+using MassTransit.Transports.Fabric;
 using Microsoft.OpenApi.Models;
 using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity;
+using SmartInventory.Inventories.Commands.AntiCorruption.In.DomainEvents.Consumers.Inventories;
+using SmartInventory.Inventories.DomainModel.PlantAggregate.DomainEvents;
 using SmartInventory.Inventories.Repository;
 
 namespace SmartInventory.Inventories.WebApi.Extensions;
 
-public static class ServiceExtensions
+public static class ServiceExtensionss
 {
     public static void AddSwagger(this IServiceCollection services)
     {
@@ -14,10 +17,11 @@ public static class ServiceExtensions
         {
             options.SwaggerDoc("v1.0", new OpenApiInfo
             {
-                Title = "Inventories", Description = "A Smart Inventory API", Version = "v1", Contact = new OpenApiContact
-                {
-                    Name = "Tanveer Hasan"
-                }
+                Title = "Inventories", Description = "A Smart Inventory API", Version = "v1", Contact =
+                    new OpenApiContact
+                    {
+                        Name = "Tanveer Hasan"
+                    }
             });
             options.SwaggerDoc("v2.0", new OpenApiInfo { Title = "Inventories", Version = "v2" });
         });
@@ -38,6 +42,16 @@ public static class ServiceExtensions
     {
         services.AddMassTransit(config =>
         {
+            config.AddEntityFrameworkOutbox<InventoriesCommandsDbContext>(o =>
+            {
+                // configure which database lock provider to use (Postgres, SqlServer, or MySql)
+                o.UseSqlServer();
+
+                // enable the bus outbox
+                o.UseBusOutbox();
+                o.QueryDelay = TimeSpan.FromSeconds(10);
+            });
+
             config.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host("localhost", "/", h =>
@@ -45,35 +59,30 @@ public static class ServiceExtensions
                     h.Username("guest");
                     h.Password("guest");
                 });
-        
+
                 //PublishBrokerTopologyOptions.FlattenHierarchy: Prevents MassTransit from creating separate exchanges per message type. Forces all messages to use a single exchange
                 // We are publishing messages to exchanges for pub/sub messaging.
                 // In the next line we have defined the exchange name to : exchange.inventories
                 cfg.PublishTopology.BrokerTopologyOptions =
                     PublishBrokerTopologyOptions
-                        .FlattenHierarchy; 
-             
-                cfg.Message<DomainEvent>(m =>
-                    m.SetEntityName(
-                        "exchange.inventories")); // MassTransit will use the inventories exchange for all DomainEvent messages type
+                        .FlattenHierarchy;
+
+                cfg.Message<PlantDomainEvent>(m =>
+                {
+                    m.SetEntityName("exchange.inventories");
+                }); // MassTransit will use the inventories exchange for all DomainEvent messages type
 
                 // configure consumers.
-                cfg.ReceiveEndpoint("queue.inventories", e =>
+                cfg.ReceiveEndpoint("queue.inventories", endpoint =>
                 {
-                    e.Bind("exchange.inventories"); // Bind queue to exchange
-
+                    endpoint.Bind("exchange.inventories"); // Bind queue to exchange
+                    endpoint.ConfigureConsumer<PlantDomainEventConsumer>(context);
                 });
+
                 //cfg.ConfigureEndpoints(context);
             });
-    
-            config.AddEntityFrameworkOutbox<InventoriesCommandsDbContext>(o =>
-            {
-                // configure which database lock provider to use (Postgres, SqlServer, or MySql)
-                o.UseSqlServer();
-            
-                // enable the bus outbox
-                o.UseBusOutbox();
-            });
+
+            config.AddConsumer<PlantDomainEventConsumer>();
         });
     }
 }

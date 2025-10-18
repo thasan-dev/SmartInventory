@@ -12,6 +12,11 @@ public abstract class CommandsDbContext(DbContextOptions options) : DbContext(op
     ///<inheritdoc />
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
     
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+    
     /// <summary>
     /// Configures how entities are mapped to database records.
     /// </summary>

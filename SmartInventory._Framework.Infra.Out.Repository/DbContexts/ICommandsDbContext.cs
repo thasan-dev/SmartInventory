@@ -1,5 +1,6 @@
 ﻿using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace SmartInventory._Framework.Infra.Out.Repository.DbContexts;
@@ -10,6 +11,11 @@ public interface ICommandsDbContext
     /// The database of this DbContext.
     /// </summary>
     DatabaseFacade Database { get; }
+    
+    /// <summary>
+    /// Provides access to change tracker information
+    /// </summary>
+    ChangeTracker ChangeTracker { get; }
 
     /// <summary>
     /// Represents the collection of OutboxState entities used by MassTransit to track batches of outgoing messages

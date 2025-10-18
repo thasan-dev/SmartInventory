@@ -1,11 +1,8 @@
-using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
-using Microsoft.OpenApi.Models;
-using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity;
 using SmartInventory.Inventories.Application.Plants;
 using SmartInventory.Inventories.DomainModel.PlantAggregate;
 using SmartInventory.Inventories.Repository;
@@ -28,18 +25,19 @@ builder.Services.AddDbContext<InventoriesCommandsDbContext>(option =>
     
     option.UseSqlServer(connectionString,
         sqlServerOptionsAction => sqlServerOptionsAction.MigrationsAssembly(assemblyName));
+    
 });
 
-builder.Services.AddSwagger();
-builder.Services.AddMassTransit();
-
-builder.Services.AddScoped<IInventoriesCommandsDbContext, InventoriesCommandsDbContext>();
+builder.Services.AddScoped<IInventoriesCommandsDbContext>(service=>service.GetRequiredService<InventoriesCommandsDbContext>());
 
 // Add Application services
 builder.Services.AddScoped<IPlantApplicationService, PlantApplicationService>();
 
 // Add Repository
 builder.Services.AddScoped<IPlantRepository, PlantRepository>();
+
+builder.Services.AddMassTransit();
+builder.Services.AddSwagger();
 
 var app = builder.Build();
 

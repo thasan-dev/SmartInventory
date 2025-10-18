@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit.EntityFrameworkCoreIntegration;
+using Microsoft.EntityFrameworkCore;
 using SmartInventory._Framework.Infra.Out.Repository.DbContexts;
 using SmartInventory.Inventories.DomainModel.PlantAggregate;
 using SmartInventory.Inventories.Repository.DbConfigurations;
@@ -12,7 +13,5 @@ public class InventoriesCommandsDbContext(DbContextOptions options) : CommandsDb
     protected override void ConfigureEntityTables(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new PlantConfiguration());
-          
     }
-
 }

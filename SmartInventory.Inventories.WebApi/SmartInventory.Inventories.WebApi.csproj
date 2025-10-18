@@ -28,6 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\SmartInventory.Inventories.Commands.AntiCorruption.In.DomainEvents\SmartInventory.Inventories.Commands.AntiCorruption.In.DomainEvents.csproj" />
       <ProjectReference Include="..\SmartInventory.Inventories.Commands.Infra.In.RestApi\SmartInventory.Inventories.Commands.Infra.In.RestApi.csproj" />
       <ProjectReference Include="..\SmartInventory.Inventories.Infra.Out.Repository\SmartInventory.Inventories.Infra.Out.Repository.csproj" />
       <ProjectReference Include="..\SmartInventory._Framework.DomainModel\SmartInventory._Framework.DomainModel.csproj" />
