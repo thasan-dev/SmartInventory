@@ -1,5 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# 
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Inventories", "Inventories", "{5923F14B-BAD6-453C-9C15-C4EB9A2CDE99}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartInventory.Inventories.WebApi", "SmartInventory.Inventories.WebApi\SmartInventory.Inventories.WebApi.csproj", "{B49D3EE5-4290-4212-BCE2-47D447141DA8}"
@@ -27,6 +28,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartInventory.Inventories.Commands.AntiCorruption.In.DomainEvents", "SmartInventory.Inventories.Commands.AntiCorruption.In.DomainEvents\SmartInventory.Inventories.Commands.AntiCorruption.In.DomainEvents.csproj", "{F71A33D8-8914-41B7-8590-7A3FA7139DF7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Queries", "Queries", "{24A51457-43AC-DB93-FFA5-0D5E6590E6D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartInventory.Inventories.QueryModel", "SmartInventory.Inventories.QueryModel\SmartInventory.Inventories.QueryModel.csproj", "{2C244859-228E-4405-B039-FE2D8F80B293}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartInventory.Inventories.Queries.Infra.Out.Repository", "SmartInventory.Inventories.Queries.Infra.Out.Repository\SmartInventory.Inventories.Queries.Infra.Out.Repository.csproj", "{22A09546-8DBB-4BFC-8F66-A47102E2E6A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartInventory.Inventories.Queries.Infra.In.RestApi", "SmartInventory.Inventories.Queries.Infra.In.RestApi\SmartInventory.Inventories.Queries.Infra.In.RestApi.csproj", "{B50D9C33-AAAF-4F34-86A5-40961999077A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartInventory._Framework.QueryModel", "SmartInventory._Framework.QueryModel\SmartInventory._Framework.QueryModel.csproj", "{5BB86C44-B2BA-439C-8C7D-D4BD45CB0A78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +83,22 @@ Global
 		{F71A33D8-8914-41B7-8590-7A3FA7139DF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F71A33D8-8914-41B7-8590-7A3FA7139DF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F71A33D8-8914-41B7-8590-7A3FA7139DF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C244859-228E-4405-B039-FE2D8F80B293}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C244859-228E-4405-B039-FE2D8F80B293}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C244859-228E-4405-B039-FE2D8F80B293}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C244859-228E-4405-B039-FE2D8F80B293}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22A09546-8DBB-4BFC-8F66-A47102E2E6A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22A09546-8DBB-4BFC-8F66-A47102E2E6A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22A09546-8DBB-4BFC-8F66-A47102E2E6A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22A09546-8DBB-4BFC-8F66-A47102E2E6A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B50D9C33-AAAF-4F34-86A5-40961999077A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B50D9C33-AAAF-4F34-86A5-40961999077A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B50D9C33-AAAF-4F34-86A5-40961999077A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B50D9C33-AAAF-4F34-86A5-40961999077A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BB86C44-B2BA-439C-8C7D-D4BD45CB0A78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BB86C44-B2BA-439C-8C7D-D4BD45CB0A78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BB86C44-B2BA-439C-8C7D-D4BD45CB0A78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BB86C44-B2BA-439C-8C7D-D4BD45CB0A78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,5 +116,9 @@ Global
 		{2C39ED69-967E-4290-87A7-C91A11A6F90C} = {61690469-F026-460C-B1A1-4FB9AE0CC56A}
 		{F71A33D8-8914-41B7-8590-7A3FA7139DF7} = {61690469-F026-460C-B1A1-4FB9AE0CC56A}
 		{24A51457-43AC-DB93-FFA5-0D5E6590E6D7} = {5923F14B-BAD6-453C-9C15-C4EB9A2CDE99}
+		{2C244859-228E-4405-B039-FE2D8F80B293} = {24A51457-43AC-DB93-FFA5-0D5E6590E6D7}
+		{22A09546-8DBB-4BFC-8F66-A47102E2E6A8} = {24A51457-43AC-DB93-FFA5-0D5E6590E6D7}
+		{B50D9C33-AAAF-4F34-86A5-40961999077A} = {24A51457-43AC-DB93-FFA5-0D5E6590E6D7}
+		{5BB86C44-B2BA-439C-8C7D-D4BD45CB0A78} = {201FB3D5-9C72-4DED-9C03-47F82BDE5570}
 	EndGlobalSection
 EndGlobal

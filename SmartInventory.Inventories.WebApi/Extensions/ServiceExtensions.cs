@@ -1,8 +1,6 @@
 using Asp.Versioning;
 using MassTransit;
-using MassTransit.Transports.Fabric;
 using Microsoft.OpenApi.Models;
-using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity;
 using SmartInventory.Inventories.Commands.AntiCorruption.In.DomainEvents.Consumers.Inventories;
 using SmartInventory.Inventories.DomainModel.PlantAggregate.DomainEvents;
 using SmartInventory.Inventories.Repository;

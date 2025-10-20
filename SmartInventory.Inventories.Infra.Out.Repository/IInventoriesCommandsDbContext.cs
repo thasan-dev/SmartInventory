@@ -4,7 +4,7 @@ using SmartInventory.Inventories.DomainModel.PlantAggregate;
 
 namespace SmartInventory.Inventories.Repository;
 
-public interface IInventoriesCommandsDbContext:ICommandsDbContext
+public interface IInventoriesCommandsDbContext : ICommandsDbContext
 {
     public DbSet<Plant> Plants { get; set; }
 }
