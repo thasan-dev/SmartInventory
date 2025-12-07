@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SmartInventory._Framework.Util.Exceptions.BusinessExceptions;
+
 
 namespace SmartInventory.Inventories.Queries.Infra.In.RestApi.V1
 {
@@ -17,6 +19,10 @@ namespace SmartInventory.Inventories.Queries.Infra.In.RestApi.V1
                 Name = "Sample Plant",
                 Species = "Sample Species"
             };
+            if (id == 0)
+            {
+                throw new _Framework.Util.Exceptions.BusinessExceptions.InvalidDataException("Invalid plant ID");
+            }
 
             logger.LogInformation("Retrieved plant with ID {PlantId}", id);
 

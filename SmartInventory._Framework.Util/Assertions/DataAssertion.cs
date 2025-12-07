@@ -1,5 +1,5 @@
 ﻿
-using InvalidDataException = SmartInventory._Framework.Util.Exceptions.BusinessException.InvalidDataException;
+using InvalidDataException = SmartInventory._Framework.Util.Exceptions.BusinessExceptions.InvalidDataException;
 
 namespace SmartInventory._Framework.Util.Assertions;
 
@@ -15,5 +15,5 @@ public static class DataAssertion
         if (!condition)
             throw new InvalidDataException($"Condition is false at {memberName}, {filePath}:{lineNumber} : {userErrorMessage}", userErrorMessage);
     }
-            
+
 }

@@ -31,6 +31,7 @@
     <ItemGroup>
       <ProjectReference Include="../SmartInventory.Inventories.Queries.Infra.In.RestApi/SmartInventory.Inventories.Queries.Infra.In.RestApi.csproj" />
       <ProjectReference Include="../SmartInventory.Inventories.Queries.Infra.Out.Repository/SmartInventory.Inventories.Queries.Infra.Out.Repository.csproj" />
+      <ProjectReference Include="../SmartInventory._Framework.Util/SmartInventory._Framework.Util.csproj" />
       <ProjectReference Include="..\SmartInventory.Inventories.Commands.AntiCorruption.In.DomainEvents\SmartInventory.Inventories.Commands.AntiCorruption.In.DomainEvents.csproj" />
       <ProjectReference Include="..\SmartInventory.Inventories.Commands.Infra.In.RestApi\SmartInventory.Inventories.Commands.Infra.In.RestApi.csproj" />
       <ProjectReference Include="..\SmartInventory.Inventories.Infra.Out.Repository\SmartInventory.Inventories.Infra.Out.Repository.csproj" />

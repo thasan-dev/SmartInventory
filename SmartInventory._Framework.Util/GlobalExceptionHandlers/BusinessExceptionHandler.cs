@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -6,7 +7,7 @@ using SmartInventory._Framework.Util.Exceptions.BusinessExceptions;
 
 namespace SmartInventory._Framework.Util.Exceptions.GlobalExceptionHandlers;
 
-public class BusinessExceptionHandler
+public class BusinessExceptionHandler : IExceptionHandler
 {
     private readonly ILogger<BusinessExceptionHandler> _logger;
 
@@ -20,7 +21,7 @@ public class BusinessExceptionHandler
         Exception exception,
         CancellationToken cancellationToken)
     {
-        if (exception is not BusinessException domainEx)
+        if (exception is not BusinessException ex)
             return false;
 
         var traceId = Activity.Current?.Id ?? context.TraceIdentifier;
@@ -33,13 +34,13 @@ public class BusinessExceptionHandler
         {
             Status = StatusCodes.Status422UnprocessableEntity,
             Title = "A business rule was violated.",
-            Detail = domainEx.Message,
+            Detail = ex.Message,
             Type = $"https://errors.yourdomain.com/{400}",
             Instance = context.Request.Path
         };
 
         details.Extensions["traceId"] = traceId;
-        details.Extensions["code"] = 400;
+        details.Extensions["code"] = 422;
 
         context.Response.StatusCode = details.Status.Value;
         context.Response.ContentType = "application/problem+json";

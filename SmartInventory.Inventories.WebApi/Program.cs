@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Serilog;
+using SmartInventory._Framework.Util.Exceptions.GlobalExceptionHandlers;
 using SmartInventory.Inventories.Application.Plants;
 using SmartInventory.Inventories.DomainModel.PlantAggregate;
 using SmartInventory.Inventories.Queries.Infra.Out.Repository;
@@ -16,12 +17,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAdB2C"));
 
+builder.Services.AddExceptionHandler<BusinessExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 // Configure Serilog
 
 builder.Host.UseSerilog((context, configBuilder) =>
 {
     configBuilder.ReadFrom.Configuration(context.Configuration);
 });
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -82,6 +87,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseSerilogRequestLogging();
+app.UseExceptionHandler();
 
 app.UseAuthentication();
 app.UseAuthorization();
