@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SmartInventory._Framework.Infra.Out.Repository.DbContexts;
 
-public abstract class CommandsDbContext(DbContextOptions options) : DbContext(options), ICommandsDbContext
+public abstract class CommandsDbContext<T>(DbContextOptions<T> options) : DbContext(options), ICommandsDbContext where T : DbContext
 {
     ///<inheritdoc />
     public DbSet<OutboxState> OutboxStates { get; set; }

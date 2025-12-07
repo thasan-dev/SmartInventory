@@ -3,6 +3,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
+using Serilog;
 using SmartInventory.Inventories.Application.Plants;
 using SmartInventory.Inventories.DomainModel.PlantAggregate;
 using SmartInventory.Inventories.Queries.Infra.Out.Repository;
@@ -14,6 +15,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAdB2C"));
+
+// Configure Serilog
+
+builder.Host.UseSerilog((context, configBuilder) =>
+{
+    configBuilder.ReadFrom.Configuration(context.Configuration);
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -42,7 +50,7 @@ builder.Services.AddScoped<IPlantApplicationService, PlantApplicationService>();
 // Add Repository
 builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 
-builder.Services.AddMassTransit();
+builder.Services.AddMassTransitUsingRabbitMq();
 builder.Services.AddSwagger();
 
 builder.Services.AddAuthorization(option =>
@@ -53,7 +61,6 @@ builder.Services.AddAuthorization(option =>
         policy.RequireClaim("role", "user");
     });
 });
-
 
 var app = builder.Build();
 
@@ -74,6 +81,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseSerilogRequestLogging();
 
 app.UseAuthentication();
 app.UseAuthorization();

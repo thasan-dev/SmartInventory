@@ -5,7 +5,7 @@ using SmartInventory.Inventories.Repository.DbConfigurations;
 
 namespace SmartInventory.Inventories.Repository;
 
-public class InventoriesCommandsDbContext(DbContextOptions options) : CommandsDbContext(options),IInventoriesCommandsDbContext
+public class InventoriesCommandsDbContext(DbContextOptions<InventoriesCommandsDbContext> options) : CommandsDbContext<InventoriesCommandsDbContext>(options),IInventoriesCommandsDbContext
 {
     public DbSet<Plant> Plants { get; set; }
     

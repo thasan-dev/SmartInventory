@@ -1,4 +1,4 @@
-﻿namespace SmartInventory._Framework.Util.Exceptions.BusinessException;
+﻿namespace SmartInventory._Framework.Util.Exceptions.BusinessExceptions;
 
 /// <summary>
 /// Base class for all BusinessExceptions in the system.
@@ -60,7 +60,7 @@ public abstract class BusinessException : ApplicationException
     /// <param name="logErrorMessage">The error message which is logged.</param>
     /// <param name="userErrorMessage">The error message which can be returned to a client/end user.</param>
     /// <param name="innerException">The exception to be logged.</param>
-    protected BusinessException(string logErrorMessage, string userErrorMessage, Exception innerException) 
+    protected BusinessException(string logErrorMessage, string userErrorMessage, Exception innerException)
         : base(logErrorMessage, innerException)
     {
         UserErrorMessage = userErrorMessage;

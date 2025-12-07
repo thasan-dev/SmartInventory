@@ -15,7 +15,10 @@ public static class ServiceExtensionss
         {
             options.SwaggerDoc("v1.0", new OpenApiInfo
             {
-                Title = "Inventories", Description = "A Smart Inventory API", Version = "v1", Contact =
+                Title = "Inventories",
+                Description = "A Smart Inventory API",
+                Version = "v1",
+                Contact =
                     new OpenApiContact
                     {
                         Name = "Tanveer Hasan"
@@ -36,7 +39,38 @@ public static class ServiceExtensionss
         });
     }
 
-    public static void AddMassTransit(this IServiceCollection services)
+    public static void AddMassTransitUsingAzureServiceBus(this IServiceCollection services)
+    {
+        services.AddMassTransit(config =>
+        {
+            config.AddEntityFrameworkOutbox<InventoriesCommandsDbContext>(o =>
+            {
+                // configure which database lock provider to use (Postgres, SqlServer, or MySql)
+                o.UseSqlServer();
+
+                // enable the bus outbox
+                o.UseBusOutbox();
+                o.QueryDelay = TimeSpan.FromSeconds(10);
+            });
+
+            config.UsingAzureServiceBus((context, cfg) =>
+            {
+                cfg.Host("Endpoint=sb://your-service-bus-namespace.servicebus.windows.net/;SharedAccessKeyName=your-key-name;SharedAccessKey=your-access-key");
+
+                // configure consumers.
+                cfg.ReceiveEndpoint("queue.inventories", endpoint =>
+                {
+                    endpoint.ConfigureConsumer<PlantDomainEventConsumer>(context);
+                });
+
+                cfg.ConfigureEndpoints(context);
+            });
+
+            config.AddConsumer<PlantDomainEventConsumer>();
+        });
+    }
+
+    public static void AddMassTransitUsingRabbitMq(this IServiceCollection services)
     {
         services.AddMassTransit(config =>
         {
