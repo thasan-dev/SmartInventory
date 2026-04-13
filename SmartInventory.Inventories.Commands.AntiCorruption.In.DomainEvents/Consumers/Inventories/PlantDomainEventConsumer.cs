@@ -1,14 +1,16 @@
 using MassTransit;
-using SmartInventory.Inventories.Commands.AntiCorruption.In.DomainEvents.Consumers.Inventories.Messages;
+using SmartInventory._Framework.DomainModel.Events;
+using SmartInventory.Messages.Inventories;
+
 
 
 namespace SmartInventory.Inventories.Commands.AntiCorruption.In.DomainEvents.Consumers.Inventories;
 
-public class PlantDomainEventConsumer: IConsumer<PlantDomainEvent>
+public class PlantDomainEventConsumer : IConsumer<DomainEventMessage<PlantDomainEventMessage>>
 {
-    public Task Consume(ConsumeContext<PlantDomainEvent> context)
+    public Task Consume(ConsumeContext<DomainEventMessage<PlantDomainEventMessage>> context)
     {
-        Console.WriteLine($"Consuming {context.Message.Message.Name}");
+        Console.WriteLine($"Consuming {context.Message.Payload.Name}");
         return Task.CompletedTask;
     }
 }

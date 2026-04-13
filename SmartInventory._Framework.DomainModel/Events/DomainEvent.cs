@@ -1,14 +1,15 @@
-﻿using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.ValueObjects;
+﻿using SmartInventory._Framework.DomainModel.Entities;
+using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity.ValueObjects;
 
-namespace SmartInventory._Framework.DomainModel.Entities.DomainEventEntity;
+namespace SmartInventory._Framework.DomainModel.Events;
 
 public class DomainEvent<TPayload> : Entity<DomainEventId> where TPayload : class
 {
-    public DomainEventName Name { get; private set; } = null!;
-    public MicroserviceName MicroserviceName { get; private set; } = null!;
-    public AggregateRootId AggregateRootId { get; private set; } = null!;
-    public AggregateRootName AggregateRootName { get; private set; } = null!;
-    public IsPublished IsPublished { get; private set; } = null!;
+    public string Name { get; private set; } = null!;
+    public string MicroserviceName { get; private set; } = null!;
+    public string AggregateRootId { get; private set; } = null!;
+    public string AggregateRootName { get; private set; } = null!;
+    public bool IsPublished { get; private set; }
     public TPayload Payload { get; private set; } = null!;
 
     public DomainEvent()
@@ -24,24 +25,23 @@ public class DomainEvent<TPayload> : Entity<DomainEventId> where TPayload : clas
         bool isPublished,
         TPayload payload)
     {
-        Name = DomainEventName.Create(domainEventName);
-        MicroserviceName = MicroserviceName.Create(microserviceName);
-        AggregateRootId = AggregateRootId.Create(aggregateRootId);
-        AggregateRootName = AggregateRootName.Create(aggregateRootName);
-        IsPublished = IsPublished.Create(isPublished);
+        Name = domainEventName;
+        MicroserviceName = microserviceName;
+        AggregateRootId = aggregateRootId.ToString();
+        AggregateRootName = aggregateRootName;
+        IsPublished = isPublished;
         Payload = payload;
-
     }
 
-    public object GetDomainEventMessage()
+    public DomainEventMessage<TPayload> ToMessage()
     {
-        return new
+        return new DomainEventMessage<TPayload>
         {
-            Id = Id.Value,
-            AggregateRootId = AggregateRootId.Value,
-            AggregateRootName = AggregateRootName.Value,
-            MicroserviceName = MicroserviceName.Value,
-            IsPublished = IsPublished.Value,
+            Name = Name,
+            MicroserviceName = MicroserviceName,
+            AggregateRootId = AggregateRootId,
+            AggregateRootName = AggregateRootName,
+            IsPublished = IsPublished,
             Payload = Payload
         };
     }

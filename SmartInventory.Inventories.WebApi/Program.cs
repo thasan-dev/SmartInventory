@@ -7,7 +7,6 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
-using Serilog.Sinks.OpenTelemetry;
 using SmartInventory._Framework.Util.Exceptions.GlobalExceptionHandlers;
 using SmartInventory.Inventories.Application.Plants;
 using SmartInventory.Inventories.DomainModel.PlantAggregate;

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using SmartInventory._Framework.DomainModel;
 using SmartInventory._Framework.DomainModel.Aggregates;
 using SmartInventory._Framework.DomainModel.Entities;
-using SmartInventory._Framework.DomainModel.Entities.DomainEventEntity;
 using SmartInventory._Framework.DomainModel.Events;
 using SmartInventory._Framework.Infra.Out.Repository.DbContexts;
 
@@ -45,14 +44,14 @@ where TEntityId : EntityId
         });
     }
 
-    public async Task SaveAndPublishAsync(Func<DbSet<TAggregateRoot>,DomainEvent<TEventPayload>> ececute)
+    public async Task SaveAndPublishAsync(Func<DbSet<TAggregateRoot>, DomainEvent<TEventPayload>> ececute)
     {
         await using var transaction = await dbContext.Database.BeginTransactionAsync();
 
         try
         {
-            var domainEvents = ececute(DbSet);
-            await publishEndpoint.Publish(domainEvents);
+            var domainEvent = ececute(DbSet);
+            await publishEndpoint.Publish(domainEvent.ToMessage());
 
             await dbContext.SaveChangesAsync();
 

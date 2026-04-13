@@ -16,7 +16,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SmartInventory.Inventories.DomainModel\SmartInventory.Inventories.DomainModel.csproj" />
+      <ProjectReference Include="../SmartInventory._Framework.DomainModel/SmartInventory._Framework.DomainModel.csproj" />
+      <ProjectReference Include="..\SmartInventory.Messages.Inventories\SmartInventory.Messages.Inventories.csproj" />
     </ItemGroup>
 
 </Project>
