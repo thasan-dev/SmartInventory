@@ -2,7 +2,6 @@ using Asp.Versioning;
 using MassTransit;
 using Microsoft.OpenApi.Models;
 using SmartInventory.Inventories.Commands.AntiCorruption.In.DomainEvents.Consumers.Inventories;
-using SmartInventory.Inventories.DomainModel.PlantAggregate.DomainEvents;
 using SmartInventory.Inventories.Repository;
 
 namespace SmartInventory.Inventories.WebApi.Extensions;
@@ -24,9 +23,6 @@ public static class ServiceExtensionss
                 break;
             case "AzureServiceBus":
                 services.AddMassTransitUsingAzureServiceBus();
-                break;
-            case "Kafka":
-                services.AddMassTransitUsingKafka(configuration);
                 break;
             default:
                 throw new InvalidOperationException(

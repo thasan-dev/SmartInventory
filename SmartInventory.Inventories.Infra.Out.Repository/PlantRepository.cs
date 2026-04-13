@@ -10,7 +10,9 @@ public class PlantRepository(
     IInventoriesCommandsDbContext dbContext,
     IPublishEndpoint publishEndpoint)
     :
-        CommandsRepository<Plant, PlantId, PlantDomainEvent>(dbContext, publishEndpoint), IPlantRepository
+        CommandsRepository<Plant, PlantId, PlantDomainEventMessage>(dbContext, publishEndpoint), IPlantRepository
 {
     protected override DbSet<Plant> DbSet  => dbContext.Plants;
+
+    protected override string MicroserviceName => "Inventories";
 }

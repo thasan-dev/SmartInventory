@@ -19,4 +19,8 @@
       <ProjectReference Include="..\SmartInventory._Framework.DomainModel\SmartInventory._Framework.DomainModel.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="DbContexts/DbConfigurations/" />
+    </ItemGroup>
+
 </Project>
