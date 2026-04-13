@@ -4,6 +4,7 @@
       "Bash(mkdir:*)",
       "Bash(touch:*)",
       "Bash(dotnet build*)",
+      "Bash(ls:*)",
       "Write",
       "Edit",
       "Glob",
