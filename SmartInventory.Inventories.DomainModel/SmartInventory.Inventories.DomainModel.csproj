@@ -10,4 +10,8 @@
       <ProjectReference Include="..\SmartInventory._Framework.DomainModel\SmartInventory._Framework.DomainModel.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="_Common/AggregateRoot/" />
+    </ItemGroup>
+
 </Project>
