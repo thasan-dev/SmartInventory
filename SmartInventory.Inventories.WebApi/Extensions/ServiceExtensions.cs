@@ -9,6 +9,31 @@ namespace SmartInventory.Inventories.WebApi.Extensions;
 
 public static class ServiceExtensionss
 {
+    /// <summary>
+    /// Configures the message broker based on the "MessageBroker" setting in appsettings.json.
+    /// Supported values: "RabbitMq", "AzureServiceBus", "Kafka".
+    /// </summary>
+    public static void AddMessageBroker(this IServiceCollection services, IConfiguration configuration)
+    {
+        var broker = configuration["MessageBroker"] ?? "RabbitMq";
+
+        switch (broker)
+        {
+            case "RabbitMq":
+                services.AddMassTransitUsingRabbitMq();
+                break;
+            case "AzureServiceBus":
+                services.AddMassTransitUsingAzureServiceBus();
+                break;
+            case "Kafka":
+                services.AddMassTransitUsingKafka(configuration);
+                break;
+            default:
+                throw new InvalidOperationException(
+                    $"Unsupported message broker: '{broker}'. Supported values: RabbitMq, AzureServiceBus, Kafka.");
+        }
+    }
+
     public static void AddSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(options =>
@@ -92,26 +117,24 @@ public static class ServiceExtensionss
                     h.Password("guest");
                 });
 
-                //PublishBrokerTopologyOptions.FlattenHierarchy: Prevents MassTransit from creating separate exchanges per message type. Forces all messages to use a single exchange
-                // We are publishing messages to exchanges for pub/sub messaging.
-                // In the next line we have defined the exchange name to : exchange.inventories
-                cfg.PublishTopology.BrokerTopologyOptions =
-                    PublishBrokerTopologyOptions
-                        .FlattenHierarchy;
+                // --- One topic per microservice (commented out) ---
+                // PublishBrokerTopologyOptions.FlattenHierarchy: Prevents MassTransit from creating separate exchanges per message type.
+                // Forces all messages to use a single exchange.
+                // cfg.PublishTopology.BrokerTopologyOptions = PublishBrokerTopologyOptions.FlattenHierarchy;
 
-                cfg.Message<PlantDomainEvent>(m =>
-                {
-                    m.SetEntityName("exchange.inventories");
-                }); // MassTransit will use the inventories exchange for all DomainEvent messages type
+                // cfg.Message<PlantDomainEvent>(m =>
+                // {
+                //     m.SetEntityName("exchange.inventories");
+                // }); // MassTransit will use the inventories exchange for all DomainEvent messages type
 
-                // configure consumers.
-                cfg.ReceiveEndpoint("queue.inventories", endpoint =>
-                {
-                    endpoint.Bind("exchange.inventories"); // Bind queue to exchange
-                    endpoint.ConfigureConsumer<PlantDomainEventConsumer>(context);
-                });
+                // cfg.ReceiveEndpoint("queue.inventories", endpoint =>
+                // {
+                //     endpoint.Bind("exchange.inventories"); // Bind queue to exchange
+                //     endpoint.ConfigureConsumer<PlantDomainEventConsumer>(context);
+                // });
 
-                //cfg.ConfigureEndpoints(context);
+                // --- One topic (exchange) per message type ---
+                cfg.ConfigureEndpoints(context);
             });
 
             config.AddConsumer<PlantDomainEventConsumer>();
