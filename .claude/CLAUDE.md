@@ -2,139 +2,101 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Build & Run
+## Commands
 
 ```bash
 # Build the solution
 dotnet build SmartInventory.sln
-
 # Run the API
 dotnet run --project SmartInventory.Inventories.WebApi/SmartInventory.Inventories.WebApi.csproj
-
-# Add an EF Core migration
-dotnet ef migrations add <MigrationName> \
-  --project SmartInventory.Inventories.Infra.Out.Repository \
-  --startup-project SmartInventory.Inventories.WebApi
-
-# Apply migrations manually
-dotnet ef database update \
-  --project SmartInventory.Inventories.Infra.Out.Repository \
-  --startup-project SmartInventory.Inventories.WebApi
 ```
 
-There are no test projects in the solution currently. Migrations are applied automatically at startup via `app.MigrateDatabase()`.
+## Architecture
 
-## Architecture Overview
+**.NET 8 CQRS + DDD microservice** for inventory management — 15 projects in `SmartInventory.sln`, organized by bounded context + CQRS side + layer. Only the **Plant** aggregate is implemented so far.
 
-**.NET 8 CQRS + DDD microservice** for inventory management. 14 projects organized by bounded context and layer.
+Full solution structure, framework layer (`_Framework.*`), and command/query/ACL request flows: see [docs/architecture.md](../docs/architecture.md).
 
-### Project Naming Convention
+## Key Conventions
 
-`SmartInventory.{BoundedContext}.{Layer}.{Direction}.{Technology}`
+- **DDD aggregate layout**: each aggregate lives in `DomainModel/{Name}Aggregate/` with the root, a static factory, the domain repository interface, `ValueObjects/`, `DomainCommands/`, and `DomainEvents/`. New aggregates mirror this exact layout. To **scaffold a new aggregate**, use the `ddd-aggregate` skill — it owns the full file-by-file templates and build order.
+- **Base class hierarchy**: `Entity<TId>` → `AggregateRoot<TId>` → `Plant`. The root extends `AggregateRoot<{Name}Id>` (single type parameter) and implements `IPublishDomainEvents<{Name}DomainEventMessage>`, exposing `GetEventPayload()`.
+- **Three-layer command DTO flow**: HTTP `CreatePlantCommand` → application `CreateOrUpdatePlantCommand` → domain `CreatePlantDomainCommand` (one DTO per layer; class-vs-record rules under Code Style).
+- **Two DbContexts**: `InventoriesCommandsDbContext` (writes, includes outbox tables `OutboxState`/`OutboxMessage`/`InboxState`) vs `InventoriesQueriesDbContext` (reads, plain `DbContext`, `AsNoTracking`).
+- **Repository pattern**: `CommandsRepository<TAggregateRoot, TEntityId, TDomainEvent>` handles transactional save + domain-event publishing via MassTransit Outbox, with rollback on `DbUpdateConcurrencyException` / `DbUpdateException`.
+- **Dependency direction**: entry points depend inward (`Infra.In → Application → DomainModel`); the domain never references an `Out` infra project. Verifiable from `.csproj` references.
 
-- **Direction**: `In` = inbound (entry points), `Out` = outbound (dependencies)
-- **Layer**: `Infra`, `Application`, `DomainModel`, `QueryModel`
+### Project Naming
+
+`SmartInventory.{BoundedContext}.{Side}.{Layer}.{Direction}.{Suffix}`
+
+- **BoundedContext**: the DDD business area (e.g. `Inventories`).
+- **Side**: CQRS side — `Commands` (write) or `Queries` (read).
+- **Layer**: `Infra`, `Application`, `DomainModel`, `QueryModel`.
+- **Direction**: `In` = inbound (entry points / consumers), `Out` = outbound (dependencies / infra).
+- **Suffix**: the concrete adapter (e.g. `RestApi`, `Repository`, `DomainEvents`).
+- **`_Framework.*`** projects are reusable building blocks shared across bounded contexts.
 
 Examples:
 - `Inventories.Commands.Infra.In.RestApi` — HTTP POST endpoints (write side)
 - `Inventories.Queries.Infra.Out.Repository` — read-side DB access
-- `Inventories.Commands.AntiCorruption.In.DomainEvents` — message consumer ACL
+- `Inventories.Commands.AntiCorruption.In.DomainEvents` — message consumer (ACL)
 
-### Request Flows
+### Folder Naming
 
-**Command (write):**
-```
-HTTP POST → Commands.Infra.In.RestApi (Controller)
-          → Inventories.Application (IPlantApplicationService)
-          → Inventories.DomainModel (PlantFactory + Plant aggregate)
-          → Infra.Out.Repository (PlantRepository + MassTransit Outbox)
-          → SQL Server + message broker (RabbitMQ / Azure Service Bus / Kafka)
-```
+- **Plural folder names** — `Plants/`, `ValueObjects/`, `Controllers/`, `DomainCommands/`.
+- **`_` prefix = shared/cross-cutting, not domain** — `_Framework.*` projects, `_Common/` folders. Signals "building block," and sorts to the top.
 
-**Query (read):**
-```
-HTTP GET → Queries.Infra.In.RestApi (Controller)
-         → Queries.Infra.Out.Repository (InventoriesQueriesDbContext)
-         → SQL Server (dedicated read context, no outbox)
-```
+### File Naming
 
-**Anti-corruption layer:**
-```
-Message broker → Commands.AntiCorruption.In.DomainEvents (PlantDomainEventConsumer)
-               → Translates external events → internal domain operations
-```
+- **Singular type names inside plural folders** — `Plants/Plant.cs`, `Plants/PlantController.cs`; aggregate root is singular (`PlantAggregate/Plant.cs`).
+- **One type per file** — aggregates, value objects, domain events, controllers, and services each get their own file (even tiny VOs, e.g. `ValueObjects/PlantId.cs`, `PlantName.cs`). DTOs may differ (can be grouped).
+- **Layer-suffixed type names** — the suffix marks the layer/role: `*DomainCommand`, `*QueryModel`, `*DbContext`, `*Repository`, `*Configuration`, `*Consumer`, `*Factory`, `*EventData`, `*Message`.
+- **Namespace mirrors folder path** — one namespace per folder. (File-scoped syntax is a Code Style rule.)
 
-### Framework Layer (`_Framework.*`)
+### Persistence (EF Core)
 
-Five reusable projects shared across bounded contexts:
-- `_Framework.DomainModel` — `AggregateRoot<TId, TDomainEvent>`, `Entity<TId>`, `ValueObject`, `EntityId`
-- `_Framework.Infra.Out.Repository` — Generic `CommandsRepository<T>` + `CommandsDbContext<T>` (configures MassTransit outbox tables)
-- `_Framework.QueryModel` — `IQueryModel` marker interface for read models
-- `_Framework.Util` — `BusinessException`, `InvalidDataException`, `BusinessExceptionHandler` middleware
-- `_Framework.Infra.Out.DomainEventApiProxy` — event proxy utilities
+- **One `IEntityTypeConfiguration` class per aggregate**, under `DbConfigurations/` (e.g. `PlantConfiguration.cs`).
+- **Plural table names** — `builder.ToTable("Plants")`.
 
-## Key Conventions
+## Code Style
 
-### DDD Aggregate Structure
+- **DTO types follow the layer**: HTTP command DTOs are **classes** with `[Required]`/data-annotation validation; application and domain commands are **records**. Keep validation attributes at the HTTP boundary only — application/domain records stay free of annotations.
+- **Construct aggregates through their static factory** (`PlantFactory`), never with `new`. Creation/update rules live in the factory and aggregate, not in the application service.
+- **Value objects extend `ValueObject`; strongly-typed IDs extend `EntityId`.** Don't pass raw `Guid`/`string` across domain boundaries where a value object exists.
+- **File-scoped namespaces** (`namespace X;`), not block-scoped.
 
-Each aggregate lives in `DomainModel/{AggregateName}Aggregate/`:
-```
-PlantAggregate/
-  Plant.cs                                     # Aggregate root
-  PlantFactory.cs                              # Static factory enforcing creation rules
-  IPlantRepository.cs                          # Domain repository interface
-  ValueObjects/PlantId.cs                      # Strongly-typed ID (extends EntityId)
-  ValueObjects/PlantName.cs                    # Value object (extends ValueObject)
-  DomainCommands/CreatePlantDomainCommand.cs   # Internal domain command (record)
-  DomainEvents/PlantDomainEvent.cs             # Event entity stored in outbox
-  DomainEvents/PlantDomainEventMessage.cs      # Message DTO for publishing
-```
+### REST API (controllers)
 
-**Base class hierarchy:**
-```
-Entity<TId>
-  └─ AggregateRoot<TId, TDomainEvent>          [_Framework.DomainModel]
-       └─ InventoryAggregateRoot<TId, TDomainEvent>  [Inventories.DomainModel]
-            └─ Plant
-```
+- **Controller attributes**: `[ApiController]` + `[ApiVersion(1.0)]`, route template `/inventories/v{version:apiVersion}/[controller]`.
+- **Primary-constructor DI** into controllers, inheriting `ControllerBase` — e.g. `PlantController(IPlantApplicationService svc) : ControllerBase`.
+- **Async actions** suffixed `*Async`, returning `Task<IActionResult>`; use HTTP-verb attributes (`[HttpPost]`, `[HttpGet("{id}")]`).
+- **Thin controllers**: translate the HTTP DTO → application command, delegate to the application service, return `Ok(...)`. No business logic in controllers.
 
-**Domain event naming:** `InventoryAggregateRoot` auto-generates event names via `RaiseDomainEvent<TAggregateRoot>(DomainEventType)` — produces `{AggregateName}Created` or `{AggregateName}Updated`. A second overload accepts a custom event name string.
+### Persistence (EF Core)
 
-### Repository Pattern
+- **Configure mappings inside the `IEntityTypeConfiguration` class**, never inline in `OnModelCreating`.
+- **Map strongly-typed IDs & value objects via `HasConversion`** (VO ↔ primitive), e.g. `HasConversion(id => id.Value, val => PlantId.Create(val))`.
 
-`CommandsRepository<TAggregateRoot, TEntityId, TDomainEvent>` (in `_Framework.Infra.Out.Repository`) handles transactional save + domain event publishing via MassTransit Outbox, catching `DbUpdateConcurrencyException` / `DbUpdateException` with rollback. Domain repositories implement the domain interface and extend this base. Note: `UpdateAsync()` is not yet implemented (throws `NotImplementedException`).
+### Exceptions
 
-### Two DbContexts
+- **`BusinessException` is abstract — never throw it directly.** Throw `InvalidDataException` for invalid input/data, or define a domain-specific subclass of `BusinessException` for a violated business rule.
+- **Throw from the domain** (aggregate, factory, value objects), not from controllers or the application service — keeps controllers thin and rules in the model.
+- **Pass both messages**: `base(logErrorMessage, userErrorMessage)` — the log message is internal/detailed; the user message is client-safe. Use the two-arg constructor whenever the client needs a meaningful message.
+- **Guard clauses use `DataAssertion.IsTrue(condition, "user message")`** — throws `InvalidDataException` when the condition is false.
+- **`BusinessExceptionHandler` (`IExceptionHandler`) maps any `BusinessException` → HTTP 422** (`application/problem+json`). Anything that isn't a `BusinessException` falls through to a 500 — so only throw `BusinessException` subclasses for expected, client-facing failures.
 
-- `InventoriesCommandsDbContext` — extends `CommandsDbContext<T>`; includes MassTransit outbox tables (`OutboxState`, `OutboxMessage`, `InboxState`); used for all writes
-- `InventoriesQueriesDbContext` — plain `DbContext`; `IQueryModel` entities with `AsNoTracking()` queryables; used for reads only
+## Repository Etiquette
 
-### Command DTO Mapping (Three Layers)
+- Branch off **`develop`** for day-to-day work; **`master`** is the stable/release branch.
+- Match the project naming convention exactly when adding projects — the `{Layer}.{Direction}.{Technology}` segments are load-bearing for the architecture.
 
-1. **HTTP layer**: `CreatePlantCommand` — plain class with `[Required]` validation attributes
-2. **Application layer**: `CreateOrUpdatePlantCommand` — record
-3. **Domain layer**: `CreatePlantDomainCommand` — record (e.g. `(Guid PlantId, string Name)`)
+## Infrastructure
 
-### Message Bus
+Message bus (MassTransit + RabbitMQ / Azure Service Bus + EF Outbox), API versioning, Azure AD B2C auth, Serilog → OpenTelemetry, and `BusinessException` → HTTP 422 handling.
 
-Configured via `"MessageBroker"` key in `appsettings.json`. Three backends:
+Config keys, defaults, and runtime prerequisites: see [docs/infrastructure.md](../docs/infrastructure.md).
 
-- **`"RabbitMq"`** — local/dev default. Uses `PublishBrokerTopologyOptions.FlattenHierarchy` (single exchange, no per-message-type exchanges). Exchange: `exchange.inventories`, queue: `queue.inventories`. Configured in `ServiceExtensions.cs` → `AddMassTransitUsingRabbitMq()`.
+## Notes
 
-- **`"AzureServiceBus"`** — production. Configured in `ServiceExtensions.cs` → `AddMassTransitUsingAzureServiceBus()`.
-
-- **`"Kafka"`** — hybrid architecture using in-memory bus + EF Outbox + Kafka Rider. Domain events flow: aggregate → in-memory bus outbox → `KafkaDomainEventForwarder` (MassTransit consumer that bridges to Kafka) → Kafka topic `{TopicPrefix}.inventories`. Configured in `KafkaServiceExtensions.cs` → `AddMassTransitUsingKafka()`. Consumer group: `{TopicPrefix}-inventories-group`.
-
-All brokers use MassTransit EF Outbox with `QueryDelay = 10 seconds` and SQL Server lock provider.
-
-### API Versioning
-
-URL-segment versioning: `/inventories/v{version:apiVersion}/[controller]` (e.g., `/inventories/v1/plants`). Swagger groups by `v1.0` and `v2.0`. Controllers annotated with `[ApiVersion(1.0)]`.
-
-### Infrastructure
-
-- **Auth**: Azure AD B2C JWT bearer; `"UserRole"` policy requires `role=user` claim; configured in `WebApi/Program.cs`
-- **Logging**: Serilog → OpenTelemetry sink (`http://localhost:4318`), service name `InventoryService`
-- **Tracing & Metrics**: OpenTelemetry OTLP (HTTP Protobuf) with AspNetCore, HttpClient, Runtime instrumentation for both traces and metrics
-- **Exception handling**: `BusinessExceptionHandler` middleware; domain throws `BusinessException` subclasses → HTTP 422
-- **Migrations**: Located in `Inventories.WebApi/Migrations/`; applied at startup
+- **EF Core migrations** — see @../docs/ef-migrations.md (commands, rules; migrations auto-apply at startup).

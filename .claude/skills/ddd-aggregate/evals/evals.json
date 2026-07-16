@@ -1,0 +1,23 @@
+{
+  "skill_name": "ddd-aggregate",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Add a Warehouse aggregate to the inventories domain. A warehouse just has a name for now.",
+      "expected_output": "Full DomainModel layer for Warehouse mirroring Plant: WarehouseAggregate/ folder with Warehouse.cs (extends AggregateRoot<WarehouseId>, implements IPublishDomainEvents<WarehouseDomainEventMessage>), WarehouseFactory.cs, IWarehouseRepository.cs, ValueObjects/WarehouseId.cs + WarehouseName.cs, DomainCommands/Create+UpdateWarehouseDomainCommand.cs (records), DomainEvents/WarehouseEventData.cs, and WarehouseDomainEventMessage.cs in the Messages project. Domain layer builds.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "I need a new domain model for a Supplier in the inventories service. A supplier has a company name and a contact email.",
+      "expected_output": "Supplier aggregate domain layer with two value objects (a name VO and an email VO that validates email format via DataAssertion), commands carrying both fields, event message flattening both, factory, repository interface. No EF/MassTransit imports in domain.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Scaffold the domain side of a StockItem. It has a SKU (a string code) and an on-hand quantity (an integer that can't be negative).",
+      "expected_output": "StockItem aggregate where Quantity is a value object wrapping an int with a non-negative DataAssertion guard (not a raw int), SKU is a value object, both with private ctor + static Create. Aggregate exposes Create/Update and GetEventPayload flattening to primitives. Shows the skill generalizes beyond string-only VOs.",
+      "files": []
+    }
+  ]
+}
